@@ -5,7 +5,7 @@ const listItems = document.querySelector(".list-items");
 const input2 = document.querySelector(".input2");
 const input = document.querySelector(".input");
 const sorting = document.querySelector(".sorting");
-const item = document.querySelector(".item");
+const items = document.querySelectorAll(".list-items .item");
 
 const warn = document.querySelector(".warn");
 
@@ -88,20 +88,77 @@ function sortTable(lists, reversed) {
   }
 }
 
+function handleDragStart(e) {
+  this.style.opacity = "0.4";
+
+  dragSrcEl = this;
+
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/html", this.innerHTML);
+}
+
+function handleDragEnd(e) {
+  this.style.opacity = "1";
+
+  items.forEach(function (item) {
+    item.classList.remove("over");
+  });
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handleDragEnter(e) {
+  this.classList.add("over");
+}
+
+function handleDragLeave(e) {
+  this.classList.remove("over");
+}
+
+function handleDrop(e) {
+  e.stopPropagation();
+
+  if (dragSrcEl !== this) {
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = e.dataTransfer.getData("text/html");
+  }
+
+  return false;
+}
+
+var i = 1;
 function displayList(list) {
-  let inputsHTML = "";
-  inputsHTML += `
-      <div class="item">
-       <div class="text">${list.firstElementChild.value}</div>
-       <div class="del">
-        <svg id="delInputBtn"width="101%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  let item = document.createElement("div");
+  item.classList.add("item");
+  item.classList.add("draggable");
+  item.setAttribute("draggable", "true");
+  item.setAttribute("id", `div${i}`);
+  i = i + 1;
+
+  let textDiv = document.createElement("div");
+  textDiv.classList.add("text");
+  textDiv.textContent = list.firstElementChild.value;
+
+  let del = document.createElement("div");
+  del.classList.add("del");
+  del.innerHTML = `<svg id="delInputBtn"width="101%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="0.5" y="0.5" width="19" height="19" rx="9.5" stroke="#C4C4C4"/>
           <path d="M6 6L14 14" stroke="#C4C4C4"/>
           <path d="M6 14L14 6" stroke="#C4C4C4"/>
-          </svg>
-      </div>
-    </div>
-      `;
-  listItems.innerHTML += inputsHTML;
+          </svg>`;
+
+  listItems.append(item);
+  item.append(textDiv);
+  item.append(del);
+
   list.firstElementChild.value = "";
+  item.addEventListener("dragstart", handleDragStart);
+  item.addEventListener("dragover", handleDragOver);
+  item.addEventListener("dragenter", handleDragEnter);
+  item.addEventListener("dragleave", handleDragLeave);
+  item.addEventListener("dragend", handleDragEnd);
+  item.addEventListener("drop", handleDrop);
 }
