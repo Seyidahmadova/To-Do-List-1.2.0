@@ -6,6 +6,8 @@ const input2 = document.querySelector(".input2");
 const input = document.querySelector(".input");
 const sorting = document.querySelector(".sorting");
 const items = document.querySelectorAll(".list-items .item");
+const svg1 = document.querySelector('.svg1')
+const svg2 = document.querySelector('.svg2')
 
 const warn = document.querySelector(".warn");
 
@@ -68,6 +70,9 @@ function sortTable(lists, reversed) {
             lists.children[i + 1].firstElementChild.textContent;
           lists.children[i + 1].firstElementChild.textContent = temp;
           switching = true;
+          svg1.style.display = 'block'
+          svg2.style.display = 'none'
+
           break;
         }
       }
@@ -80,6 +85,8 @@ function sortTable(lists, reversed) {
           lists.children[i].firstElementChild.textContent =
             lists.children[i + 1].firstElementChild.textContent;
           lists.children[i + 1].firstElementChild.textContent = temp1;
+          svg1.style.display = 'none'
+          svg2.style.display = 'block'
           switching = true;
           break;
         }
